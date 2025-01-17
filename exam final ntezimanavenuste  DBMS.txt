@@ -1,0 +1,486 @@
+ Practical exam  database management system
+(1)mysql> CREATE DATABASE sale;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> USE sale;
+Database changed
+mysql> CREATE TABLE client_master (
+    ->     clientno VARCHAR(10) PRIMARY KEY,
+    ->     name VARCHAR(50),
+    ->     address VARCHAR(100),
+    ->     city VARCHAR(50),
+    ->     state VARCHAR(50),
+    ->     bal_due DECIMAL(10, 2)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc  client_master;
++----------+---------------+------+-----+---------+-------+
+| Field    | Type          | Null | Key | Default | Extra |
++----------+---------------+------+-----+---------+-------+
+| clientno | varchar(10)   | NO   | PRI | NULL    |       |
+| name     | varchar(50)   | YES  |     | NULL    |       |
+| address  | varchar(100)  | YES  |     | NULL    |       |
+| city     | varchar(50)   | YES  |     | NULL    |       |
+| state    | varchar(50)   | YES  |     | NULL    |       |
+| bal_due  | decimal(10,2) | YES  |     | NULL    |       |
++----------+---------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+mysql> INSERT INTO client_master (clientno, name, address, city, state, bal_due)
+    -> VALUES
+    ->     ('C101', 'Alice Johnson', '123 Main St', 'New York', 'NY', 7000.00),
+    ->     ('C102', 'Bob Smith', '456 Oak Ave', 'Los Angeles', 'CA', 3000.00),
+    ->     ('C103', 'Catherine Lee', '789 Pine Dr', 'Chicago', 'IL', 8000.00),
+    ->     ('C104', 'David Brown', '321 Maple Ln', 'Houston', 'TX', 2000.00),
+    ->     ('C123', 'Eva Green', '654 Elm St', 'Phoenix', 'AZ', 6000.00);
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select *from client_master;
++----------+---------------+--------------+-------------+-------+---------+
+| clientno | name          | address      | city        | state | bal_due |
++----------+---------------+--------------+-------------+-------+---------+
+| C101     | Alice Johnson | 123 Main St  | New York    | NY    | 7000.00 |
+| C102     | Bob Smith     | 456 Oak Ave  | Los Angeles | CA    | 3000.00 |
+| C103     | Catherine Lee | 789 Pine Dr  | Chicago     | IL    | 8000.00 |
+| C104     | David Brown   | 321 Maple Ln | Houston     | TX    | 2000.00 |
+| C123     | Eva Green     | 654 Elm St   | Phoenix     | AZ    | 6000.00 |
++----------+---------------+--------------+-------------+-------+---------+
+5 rows in set (0.00 sec)
+(2)mysql> SELECT name
+    -> FROM client_master
+    -> WHERE bal_due > 5000;
++---------------+
+| name          |
++---------------+
+| Alice Johnson |
+| Catherine Lee |
+| Eva Green     |
++---------------+
+3 rows in set (0.00 sec)
+(3)mysql> UPDATE client_master
+    -> SET bal_due = 5000
+    -> WHERE clientno = 'C123';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+mysql> SELECT *FROM client_master;
++----------+---------------+--------------+-------------+-------+---------+
+| clientno | name          | address      | city        | state | bal_due |
++----------+---------------+--------------+-------------+-------+---------+
+| C101     | Alice Johnson | 123 Main St  | New York    | NY    | 7000.00 |
+| C102     | Bob Smith     | 456 Oak Ave  | Los Angeles | CA    | 3000.00 |
+| C103     | Catherine Lee | 789 Pine Dr  | Chicago     | IL    | 8000.00 |
+| C104     | David Brown   | 321 Maple Ln | Houston     | TX    | 2000.00 |
+| C123     | Eva Green     | 654 Elm St   | Phoenix     | AZ    | 5000.00 |
++----------+---------------+--------------+-------------+-------+---------+
+5 rows in set (0.00 sec)
+(4)mysql> ALTER TABLE client_master
+    -> RENAME TO client12;
+Query OK, 0 rows affected (0.02 sec)
+ mysql> select* from client12;
++----------+---------------+--------------+-------------+-------+---------+
+| clientno | name          | address      | city        | state | bal_due |
++----------+---------------+--------------+-------------+-------+---------+
+| C101     | Alice Johnson | 123 Main St  | New York    | NY    | 7000.00 |
+| C102     | Bob Smith     | 456 Oak Ave  | Los Angeles | CA    | 3000.00 |
+| C103     | Catherine Lee | 789 Pine Dr  | Chicago     | IL    | 8000.00 |
+| C104     | David Brown   | 321 Maple Ln | Houston     | TX    | 2000.00 |
+| C123     | Eva Green     | 654 Elm St   | Phoenix     | AZ    | 5000.00 |
++----------+---------------+--------------+-------------+-------+---------+
+5 rows in set (0.00 sec)
+section b.
+6.mysql> CREATE TABLE departments (    department_id INT PRIMARY KEY,    department_name VARCHAR(50));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE employees (    em_id INT PRIMARY KEY,    firstname VARCHAR(50),    lastname VARCHAR(50),    department_id INT,    salary DECIMAL(10, 2),    FOREIGN KEY (department_id) REFERENCES departments(department_id));
+ERROR 1050 (42S01): Table 'employees' already exists
+mysql> CREATE TABLE employees2 (    em_id INT PRIMARY KEY,    firstname VARCHAR(50),    lastname VARCHAR(50),    department_id INT,    salary DECIMAL(10, 2),    FOREIGN KEY (department_id) REFERENCES departments(department_id));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> desc departments;
++-----------------+-------------+------+-----+---------+-------+
+| Field           | Type        | Null | Key | Default | Extra |
++-----------------+-------------+------+-----+---------+-------+
+| department_id   | int         | NO   | PRI | NULL    |       |
+| department_name | varchar(50) | YES  |     | NULL    |       |
++-----------------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> desc employees2;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| em_id         | int           | NO   | PRI | NULL    |       |
+| firstname     | varchar(50)   | YES  |     | NULL    |       |
+| lastname      | varchar(50)   | YES  |     | NULL    |       |
+| department_id | int           | YES  | MUL | NULL    |       |
+| salary        | decimal(10,2) | YES  |     | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO departments (department_id, department_name)VALUES    (1, 'Human Resources'),    (2, 'Engineering'),    (3, 'Marketing'),    (4, 'Finance'),    (5, 'Sales');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO employees2 (em_id, firstname, lastname, department_id, salary)VALUES    (101, 'Alice', 'Johnson', 1, 5000),    (102, 'Bob', 'Smith', 2, 7000),    (103, 'Catherine', 'Lee', 3, 4500),    (104, 'David', 'Brown', 4, 5200),    (105, 'Eva', 'Green', NULL, 6000);
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> ^C
+mysql> DESC employees;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| id             | int          | NO   | PRI | NULL    |       |
+| name           | varchar(255) | YES  |     | NULL    |       |
+| tel            | varchar(255) | YES  |     | NULL    |       |
+| dep_id         | int          | YES  | MUL | NULL    |       |
+| salary         | varchar(100) | YES  |     | NULL    |       |
+| average_salary | varchar(100) | YES  |     | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+
+mysql> SELECT employees2.firstname, employees2.lastname AS employee_name,    departments.department_name FROM employees2 LEFT JOIN departments ON employees2.department_id = departments.department_id;
++-----------+---------------+-----------------+
+| firstname | employee_name | department_name |
++-----------+---------------+-----------------+
+| Alice     | Johnson       | Human Resources |
+| Bob       | Smith         | Engineering     |
+| Catherine | Lee           | Marketing       |
+| David     | Brown         | Finance         |
+| Eva       | Green         | NULL            |
++-----------+---------------+-----------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT
+    ->     employees2.firstname , employees2.lastname AS employee_name,
+    ->     departments.department_name
+    -> FROM employees2
+    -> RIGHT JOIN departments
+    -> ON employees2.department_id = departments.department_id;
++-----------+---------------+-----------------+
+| firstname | employee_name | department_name |
++-----------+---------------+-----------------+
+| Alice     | Johnson       | Human Resources |
+| Bob       | Smith         | Engineering     |
+| Catherine | Lee           | Marketing       |
+| David     | Brown         | Finance         |
+| NULL      | NULL          | Sales           |
++-----------+---------------+-----------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT AVG(salary) AS avg_salary
+    -> FROM employees2;
++-------------+
+| avg_salary  |
++-------------+
+| 5540.000000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT firstname , lastname AS employee_name, salary
+    -> FROM employees2
+    -> WHERE salary > (SELECT AVG(salary) FROM employees);
++-----------+---------------+---------+
+| firstname | employee_name | salary  |
++-----------+---------------+---------+
+| Bob       | Smith         | 7000.00 |
+| David     | Brown         | 5200.00 |
+| Eva       | Green         | 6000.00 |
++-----------+---------------+---------+
+3 rows in set (0.01 sec)
+
+mysql>
+7.mysql> CREATE TABLE student1 (
+    ->     student_id VARCHAR(5),
+    ->     full_name VARCHAR(25),
+    ->     gender VARCHAR(6),
+    ->     age INT,
+    ->     department VARCHAR(30)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> desc student1;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| student_id | varchar(5)  | YES  |     | NULL    |       |
+| full_name  | varchar(25) | YES  |     | NULL    |       |
+| gender     | varchar(6)  | YES  |     | NULL    |       |
+| age        | int         | YES  |     | NULL    |       |
+| department | varchar(30) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql>
+mysql> INSERT INTO student1 (student_id, full_name, gender, age, department)
+    -> VALUES
+    ->     ('S001', 'Alice Johnson', 'Female', 19, 'Engineering'),
+    ->     ('S002', 'Bob Smith', 'Male', 22, 'Science'),
+    ->     ('S003', 'Catherine Lee', 'Female', 21, 'Mathematics'),
+    ->     ('S004', 'David Brown', 'Male', 18, 'Arts'),
+    ->     ('S005', 'Eva Green', 'Female', 20, 'Engineering');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select *from student1;
++------------+---------------+--------+------+-------------+
+| student_id | full_name     | gender | age  | department  |
++------------+---------------+--------+------+-------------+
+| S001       | Alice Johnson | Female |   19 | Engineering |
+| S002       | Bob Smith     | Male   |   22 | Science     |
+| S003       | Catherine Lee | Female |   21 | Mathematics |
+| S004       | David Brown   | Male   |   18 | Arts        |
+| S005       | Eva Green     | Female |   20 | Engineering |
++------------+---------------+--------+------+-------------+
+5 rows in set (0.00 sec)
+mysql> CREATE VIEW list_of_student1 AS
+    -> SELECT student_id, full_name, gender, age, department
+    -> FROM student1;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select *from list_of_student1;
++------------+---------------+--------+------+-------------+
+| student_id | full_name     | gender | age  | department  |
++------------+---------------+--------+------+-------------+
+| S001       | Alice Johnson | Female |   19 | Engineering |
+| S002       | Bob Smith     | Male   |   22 | Science     |
+| S003       | Catherine Lee | Female |   21 | Mathematics |
+| S004       | David Brown   | Male   |   18 | Arts        |
+| S005       | Eva Green     | Female |   20 | Engineering |
++------------+---------------+--------+------+-------------+
+5 rows in set (0.00 sec)
+mysql> CREATE VIEW list_of_girls1 AS
+    -> SELECT student_id, full_name, age, department
+    -> FROM student1
+    -> WHERE gender = 'Female';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select *from list_of_girls1;
++------------+---------------+------+-------------+
+| student_id | full_name     | age  | department  |
++------------+---------------+------+-------------+
+| S001       | Alice Johnson |   19 | Engineering |
+| S003       | Catherine Lee |   21 | Mathematics |
+| S005       | Eva Green     |   20 | Engineering |
++------------+---------------+------+-------------+
+3 rows in set (0.00 sec)
+mysql> CREATE VIEW list_of_boys1 AS
+    -> SELECT student_id, full_name, age, department
+    -> FROM student1
+    -> WHERE gender = 'Male';
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select *from list_of_boys1;
++------------+-------------+------+------------+
+| student_id | full_name   | age  | department |
++------------+-------------+------+------------+
+| S002       | Bob Smith   |   22 | Science    |
+| S004       | David Brown |   18 | Arts       |
++------------+-------------+------+------------+
+2 rows in set (0.00 sec)
+mysql> DELETE FROM student1
+    -> WHERE age < 20;
+Query OK, 2 rows affected (0.00 sec)
+
+mysql> select  *from student1;
++------------+---------------+--------+------+-------------+
+| student_id | full_name     | gender | age  | department  |
++------------+---------------+--------+------+-------------+
+| S002       | Bob Smith     | Male   |   22 | Science     |
+| S003       | Catherine Lee | Female |   21 | Mathematics |
+| S005       | Eva Green     | Female |   20 | Engineering |
++------------+---------------+--------+------+-------------+
+3 rows in set (0.00 sec)
+(9)
+mysql> CREATE TABLE employee1 (
+    ->     em_id INT,
+    ->     firstname VARCHAR(50),
+    ->     lastname VARCHAR(50),
+    ->     email VARCHAR(50),
+    ->     phone_number VARCHAR(20),
+    ->     hire_date DATE,
+    ->     job_id VARCHAR(10),
+    ->     salary DECIMAL(10, 2),
+    ->     commission_pct DECIMAL(4, 2),
+    ->     manager_id INT,
+    ->     department_id INT
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+mysql> desc employee1;
++----------------+---------------+------+-----+---------+-------+
+| Field          | Type          | Null | Key | Default | Extra |
++----------------+---------------+------+-----+---------+-------+
+| em_id          | int           | YES  |     | NULL    |       |
+| firstname      | varchar(50)   | YES  |     | NULL    |       |
+| lastname       | varchar(50)   | YES  |     | NULL    |       |
+| email          | varchar(50)   | YES  |     | NULL    |       |
+| phone_number   | varchar(20)   | YES  |     | NULL    |       |
+| hire_date      | date          | YES  |     | NULL    |       |
+| job_id         | varchar(10)   | YES  |     | NULL    |       |
+| salary         | decimal(10,2) | YES  |     | NULL    |       |
+| commission_pct | decimal(4,2)  | YES  |     | NULL    |       |
+| manager_id     | int           | YES  |     | NULL    |       |
+| department_id  | int           | YES  |     | NULL    |       |
++----------------+---------------+------+-----+---------+-------+
+11 rows in set (0.00 sec)
+mysql> (1) INSERT INTO employee1 (em_id, firstname, lastname, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id)VALUES    (1, 'Alice', 'Smith', 'alice.smith@example.com', '123-456-7890', '2020-01-15', 'HR01', 5000, 0.10, 100, 60),    (2, 'Bob', 'Johnson', 'bob.johnson@example.com', '123-456-7891', '2021-05-20', 'ENG02', 4800, 0.12, 100, 70),    (3, 'Catherine', 'Lee', 'catherine.lee@example.com', '123-456-7892', '2019-11-30', 'MKT03', 4500, 0.08, 102, 80),    (4, 'David', 'Austin', 'david.austin@example.com', '123-456-7893', '2022-03-10', 'FIN04', 5200, 0.15, 101, 60),    (5, 'Eva', 'Green', 'eva.green@example.com', '123-456-7894', '2023-06-25', 'HR05', 3000, NULL, 102, 90);
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select *from employee1;
++-------+-----------+----------+---------------------------+--------------+------------+--------+---------+----------------+------------+---------------+
+| em_id | firstname | lastname | email                     | phone_number | hire_date  | job_id | salary  | commission_pct | manager_id | department_id |
++-------+-----------+----------+---------------------------+--------------+------------+--------+---------+----------------+------------+---------------+
+|     1 | Alice     | Smith    | alice.smith@example.com   | 123-456-7890 | 2020-01-15 | HR01   | 5000.00 |           0.10 |        100 |            60 |
+|     2 | Bob       | Johnson  | bob.johnson@example.com   | 123-456-7891 | 2021-05-20 | ENG02  | 4800.00 |           0.12 |        100 |            70 |
+|     3 | Catherine | Lee      | catherine.lee@example.com | 123-456-7892 | 2019-11-30 | MKT03  | 4500.00 |           0.08 |        102 |            80 |
+|     4 | David     | Austin   | david.austin@example.com  | 123-456-7893 | 2022-03-10 | FIN04  | 5200.00 |           0.15 |        101 |            60 |
+|     5 | Eva       | Green    | eva.green@example.com     | 123-456-7894 | 2023-06-25 | HR05   | 3000.00 |           NULL |        102 |            90 |
++-------+-----------+----------+---------------------------+--------------+------------+--------+---------+----------------+------------+---------------+
+5 rows in set (0.00 sec)
+(a)mysql> SELECT em_id, CONCAT(firstname, ' ', lastname) AS full_name, salary
+    -> FROM employee1;
++-------+---------------+---------+
+| em_id | full_name     | salary  |
++-------+---------------+---------+
+|     1 | Alice Smith   | 5000.00 |
+|     2 | Bob Johnson   | 4800.00 |
+|     3 | Catherine Lee | 4500.00 |
+|     4 | David Austin  | 5200.00 |
+|     5 | Eva Green     | 3000.00 |
++-------+---------------+---------+
+5 rows in set (0.00 sec)
+(b)mysql> SELECT  em_id, CONCAT(firstname, ' ', lastname) AS full_name, manager_id
+    -> FROM employee1
+    -> WHERE manager_id = 100;
++-------+-------------+------------+
+| em_id | full_name   | manager_id |
++-------+-------------+------------+
+|     1 | Alice Smith |        100 |
+|     2 | Bob Johnson |        100 |
++-------+-------------+------------+
+2 rows in set (0.00 sec)
+(c)mysql> SELECT em_id, CONCAT(firstname, ' ', lastname) AS full_name, salary
+    -> FROM employee1
+    -> WHERE salary >= 4800;
++-------+--------------+---------+
+| em_id | full_name    | salary  |
++-------+--------------+---------+
+|     1 | Alice Smith  | 5000.00 |
+|     2 | Bob Johnson  | 4800.00 |
+|     4 | David Austin | 5200.00 |
++-------+--------------+---------+
+3 rows in set (0.00 sec)
+(d)mysql> SELECT em_id, CONCAT(firstname, ' ', lastname) AS full_name, lastname
+    -> FROM employee1
+    -> WHERE lastname = 'Austin';
++-------+--------------+----------+
+| em_id | full_name    | lastname |
++-------+--------------+----------+
+|     4 | David Austin | Austin   |
++-------+--------------+----------+
+1 row in set (0.00 sec)
+(e)mysql> SELECT em_id, CONCAT(firstname, ' ', lastname) AS full_name, department_id
+    -> FROM employee1
+    -> WHERE department_id IN (60, 70, 80);
++-------+---------------+---------------+
+| em_id | full_name     | department_id |
++-------+---------------+---------------+
+|     1 | Alice Smith   |            60 |
+|     2 | Bob Johnson   |            70 |
+|     3 | Catherine Lee |            80 |
+|     4 | David Austin  |            60 |
++-------+---------------+---------------+
+4 rows in set (0.00 sec)
+(10)mysql> CREATE TABLE Sales1 (
+    ->     Sales_No INT,
+    ->     Salesname VARCHAR(50),
+    ->     Branch VARCHAR(50),
+    ->     Salesamount DECIMAL(10, 2),
+    ->     DOB DATE
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+mysql> desc sales1;
++-------------+---------------+------+-----+---------+-------+
+| Field       | Type          | Null | Key | Default | Extra |
++-------------+---------------+------+-----+---------+-------+
+| Sales_No    | int           | YES  |     | NULL    |       |
+| Salesname   | varchar(50)   | YES  |     | NULL    |       |
+| Branch      | varchar(50)   | YES  |     | NULL    |       |
+| Salesamount | decimal(10,2) | YES  |     | NULL    |       |
+| DOB         | date          | YES  |     | NULL    |       |
++-------------+---------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+(a)mysql> INSERT INTO Sales1 (Sales_No, Salesname, Branch, Salesamount, DOB)
+    -> VALUES
+    ->     (1, 'Alice Johnson', 'New York', 1200.50, '1990-12-15'),
+    ->     (2, 'Bob Smith', 'Los Angeles', 2500.00, '1985-06-10'),
+    ->     (3, 'Catherine Lee', 'Chicago', 1800.75, '1992-12-20'),
+    ->     (4, 'David Brown', 'Houston', 3000.00, '1988-03-05'),
+    ->     (5, 'Eva Green', 'Phoenix', 2000.25, '1995-12-25');
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select *from sales1;
++----------+---------------+-------------+-------------+------------+
+| Sales_No | Salesname     | Branch      | Salesamount | DOB        |
++----------+---------------+-------------+-------------+------------+
+|        1 | Alice Johnson | New York    |     1200.50 | 1990-12-15 |
+|        2 | Bob Smith     | Los Angeles |     2500.00 | 1985-06-10 |
+|        3 | Catherine Lee | Chicago     |     1800.75 | 1992-12-20 |
+|        4 | David Brown   | Houston     |     3000.00 | 1988-03-05 |
+|        5 | Eva Green     | Phoenix     |     2000.25 | 1995-12-25 |
++----------+---------------+-------------+-------------+------------+
+5 rows in set (0.00 sec)
+(b)mysql> SELECT Branch, SUM(Salesamount) AS TotalSales
+    -> FROM Sales1
+    -> GROUP BY Branch;
++-------------+------------+
+| Branch      | TotalSales |
++-------------+------------+
+| New York    |    1200.50 |
+| Los Angeles |    2500.00 |
+| Chicago     |    1800.75 |
+| Houston     |    3000.00 |
+| Phoenix     |    2000.25 |
++-------------+------------+
+5 rows in set (0.00 sec)
+(C)mysql> SELECT Branch, AVG(Salesamount) AS AverageSales
+    -> FROM Sales1
+    -> GROUP BY Branch;
++-------------+--------------+
+| Branch      | AverageSales |
++-------------+--------------+
+| New York    |  1200.500000 |
+| Los Angeles |  2500.000000 |
+| Chicago     |  1800.750000 |
+| Houston     |  3000.000000 |
+| Phoenix     |  2000.250000 |
++-------------+--------------+
+5 rows in set (0.00 sec)
+(d)mysql> SELECT Salesname, DOB
+    -> FROM Sales1
+    -> WHERE MONTH(DOB) = 12;
++---------------+------------+
+| Salesname     | DOB        |
++---------------+------------+
+| Alice Johnson | 1990-12-15 |
+| Catherine Lee | 1992-12-20 |
+| Eva Green     | 1995-12-25 |
++---------------+------------+
+3 rows in set (0.00 sec)
+(e)mysql> SELECT Salesname, DOB
+    -> FROM Sales1
+    -> ORDER BY Salesname ASC;
++---------------+------------+
+| Salesname     | DOB        |
++---------------+------------+
+| Alice Johnson | 1990-12-15 |
+| Bob Smith     | 1985-06-10 |
+| Catherine Lee | 1992-12-20 |
+| David Brown   | 1988-03-05 |
+| Eva Green     | 1995-12-25 |
++---------------+------------+
+5 rows in set (0.00 sec)
